@@ -1,29 +1,62 @@
 # Genetic Algorithm for Function Optimization
 
-This code implements a genetic algorithm to find the optimal values of six weights (w1 to w6) that maximize the following equation:
-y = w1x1 + w2x2 + w3x3 + w4x4 + w5x5 + w6x6
-where (x1, x2, x3, x4, x5, x6) = (3, -1, 4.5, 6, -10, -5.7)
+Repositori ini berisi implementasi **Algoritma Genetika (Genetic Algorithm - GA)** untuk mengoptimalkan nilai dari enam bobot ($w_1$ hingga $w_6$) guna memaksimalkan fungsi linear berikut:
 
-## How it Works
+$$
+y = w_1x_1 + w_2x_2 + w_3x_3 + w_4x_4 + w_5x_5 + w_6x_6
+$$
 
-The genetic algorithm works by simulating the natural evolution process. Here are the steps involved:
+Dengan nilai input konstan:
+$$
+(x_1, x_2, x_3, x_4, x_5, x_6) = (3, -1, 4.5, 6, -10, -5.7)
+$$
 
-1. **Initialization:** An initial population of random solutions is created.
-2. **Evaluation:** Each solution is evaluated using a fitness function.
-3. **Selection:** The best solutions (with the highest fitness) are selected as parents for the next generation.
-4. **Crossover:** The parents are combined to produce new offspring.
-5. **Mutation:** The new offspring undergo random mutations to introduce variation.
-6. **Evaluation:** The new offspring are evaluated using the fitness function.
-7. **Replacement:** The old population is replaced with the new population consisting of the newly generated offspring.
-8. **Termination:** The algorithm is stopped when a termination condition is met (e.g., the maximum number of generations is reached).
+Batas nilai untuk setiap bobot ($w$) adalah antara **-4.0 hingga 4.0**. Batas teoretis maksimal yang dapat dicapai dari persamaan ini adalah **120.8**.
 
-## Usage
+## Cara Kerja
 
-1. Make sure you have the NumPy and Matplotlib libraries installed.
-2. Run the code in Google Colab or Jupyter Notebook.
-3. The code will display the best solution and its fitness.
-4. The code will also display a plot of the best fitness over iterations.
+Algoritma genetika ini meniru proses evolusi alamiah melalui tahapan-tahapan berikut:
 
-## Parameters
+1. **Inisialisasi**: Populasi awal berisi 30 solusi (kromosom) acak dibuat dengan nilai gen antara -4.0 dan 4.0.
+2. **Evaluasi**: Setiap solusi dihitung nilai kebugarannya (*fitness value*) menggunakan fungsi kebugaran sum-of-products.
+3. **Seleksi**: Solusi-solusi terbaik dipilih secara acak menggunakan metode berbobot berbasis nilai fitness untuk dijadikan induk (*parents*).
+4. **Crossover (Penyilangan)**: Menggabungkan gen dari pasangan induk untuk menghasilkan keturunan (*offspring*) baru (menggunakan metode satu titik potong tengah).
+5. **Mutasi**: Memberikan variasi acak kecil pada gen anak yang dihasilkan agar tidak terjebak pada solusi optimum lokal.
+6. **Substitusi**: Mengganti populasi lama yang kurang fit dengan induk terpilih dan anak hasil mutasi yang baru.
+7. **Terminasi**: Algoritma berhenti setelah mencapai jumlah generasi yang ditentukan (default: 100 generasi).
 
-You can change the parameters of the genetic algorithm such as the population size, the number of parents, and the mutation rate. These parameters can be found at the top of the code.
+## Struktur Kode
+
+* `cal_pop_fitness`: Fungsi untuk menghitung nilai fitness populasi.
+* `select_mating_pool`: Seleksi induk menggunakan metode peluang proporsional terhadap fitness.
+* `crossover`: Melakukan persilangan gen dari induk.
+* `mutation`: Melakukan mutasi gen dengan batas toleransi.
+* `run_ga`: Fungsi pembungkus untuk menjalankan satu siklus penuh algoritma genetika.
+* `run_experiment`: Menjalankan eksperimen untuk melihat pengaruh parameter GA terhadap hasil akhir.
+
+## Hasil Eksperimen Parameter
+
+Kami melakukan pengujian dengan 20 kali percobaan acak (*runs*) untuk melihat pengaruh perubahan parameter terhadap tingkat konvergensi:
+
+### 1. Pengaruh Jumlah Mutasi per Anak (`num_mutations`)
+* **`num_mutations = 1`**: Fitness akhir rata-rata **116.63** (~96.5% dari batas maks).
+* **`num_mutations = 3`**: Fitness akhir rata-rata **117.15** (~97.0% dari batas maks).
+* **`num_mutations = 5`**: Fitness akhir rata-rata **113.10** (~93.6% dari batas maks).
+
+### 2. Pengaruh Jumlah Induk Terpilih (`num_parents`)
+* **`num_parents = 2`**: Fitness akhir rata-rata **112.02** (~92.7% dari batas maks).
+* **`num_parents = 4`**: Fitness akhir rata-rata **117.15** (~97.0% dari batas maks).
+* **`num_parents = 8`**: Fitness akhir rata-rata **119.27** (~98.7% dari batas maks).
+
+## Cara Penggunaan
+
+### Prasyarat
+Pastikan Anda sudah menginstal pustaka Python yang diperlukan:
+```bash
+pip install numpy matplotlib
+```
+
+### Menjalankan Program
+1. Buka berkas notebook (`.ipynb`) ini di Google Colab atau Jupyter Notebook.
+2. Jalankan semua cell secara berurutan.
+3. Hasil akhir berupa visualisasi grafik perkembangan nilai fitness serta perbandingan parameter akan langsung ditampilkan di bagian bawah notebook.
